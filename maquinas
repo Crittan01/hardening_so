@@ -1,0 +1,9 @@
+[centos_servers]
+centos7
+
+[ubuntu_servers]
+ubuntu24
+
+# Todos los servidores
+[all:vars]
+ansible_connection=ssh
