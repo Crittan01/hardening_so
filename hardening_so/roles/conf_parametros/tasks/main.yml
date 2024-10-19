@@ -1,0 +1,67 @@
+---
+# tasks file for roles/conf_parametros
+- name: Configurar reglas de auditoría
+  ansible.builtin.copy:
+    dest: /etc/audit/rules.d/audit.rules
+    content: |
+      # Monitorear cambios en /etc/passwd
+      -w /etc/passwd -p wa -k passwd_changes
+      # Monitorear cambios en /etc/shadow
+      -w /etc/shadow -p wa -k shadow_changes
+      # Monitorear el uso de sudo
+      -w /var/log/sudo.log -p wa -k sudo_usage
+      # Monitorear cambios en la configuración de SSH
+      -w /etc/ssh/ -p wa -k ssh_config_changes
+      # Registrar ejecuciones de comandos
+      -a always,exit -F arch=b64 -S execve -k command_execution
+      # Monitorear cambios en /etc/group
+      -w /etc/group -p wa -k group_changes
+      # Monitorear cambios en /etc/gshadow
+      -w /etc/gshadow -p wa -k gshadow_changes
+      # Auditar accesos fallidos
+      -w /var/log/secure -p wa -k auth_failures
+      # Auditar cambios de hora del sistema
+      -a always,exit -F arch=b64 -S adjtimex -S settimeofday -S clock_settime -k time_changes
+    mode: "0400"
+
+# 7. Políticas de Contraseñas
+- name: Configurar políticas de contraseñas (minlen = 12)
+  ansible.builtin.lineinfile:
+    path: /etc/security/pwquality.conf
+    regexp: "^#?minlen"
+    line: "minlen = 12"
+    state: present
+
+# 8. Bloqueo de cuentas tras intentos fallidos
+- name: Configurar bloqueo de cuentas tras intentos fallidos
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/sshd
+    insertafter: "auth.*required.*pam_unix.so"
+    line: "auth required pam_tally2.so deny=5 unlock_time=900"
+    state: present
+
+# 9. Establecer límites de recursos para usuarios
+- name: Establecer límites de recursos para usuarios
+  ansible.builtin.lineinfile:
+    path: /etc/security/limits.conf
+    line: "* hard nproc 500"
+    state: present
+
+# 10. Bloqueo de cuentas tras intentos fallidos
+- name: Configurar bloqueo de cuentas tras intento fallidos
+  ansible.builtin.lineinfile:
+    path: /etc/pam.d/sshd
+    insertafter: "auth.*required.*pam_unix.so"
+    line: "auth required pam_tally2.so deny={{ failed_login_attempts | default(5) }} unlock_time=900"
+    state: present
+
+- name: Configurar /etc/hosts.allow para permitir acceso a ciertos servicios
+  ansible.builtin.lineinfile:
+    path: /etc/hosts.allow
+    line: "sshd: {{ ip_allow | default('192.168.1.0/24') }}"
+
+- name: Configurar rotación de logs
+  ansible.builtin.lineinfile:
+    path: /etc/logrotate.conf
+    regexp: "^#?rotate"
+    line: "rotate {{ prm_rotate | default('7') }}" # Mantener logs durante 7 días

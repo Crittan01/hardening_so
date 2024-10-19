@@ -1,0 +1,12 @@
+---
+- name: Hardening de Servidores
+  hosts: servers
+  become: true
+
+  roles:
+    - install_pkgs
+    - conf_services
+    - conf_ssh
+    - conf_firewalld
+    - conf_param_kernel
+    - conf_parametros
