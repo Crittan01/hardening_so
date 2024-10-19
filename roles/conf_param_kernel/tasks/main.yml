@@ -9,7 +9,7 @@
     state: present
     reload: true
 
-# 10. Seguridad del Kernel
+# 6. Seguridad del Kernel
 - name: Configurar parámetros de seguridad del kernel
   ansible.posix.sysctl:
     name: "{{ item.name }}"

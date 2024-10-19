@@ -1,5 +1,5 @@
 ---
-# handlers file for roles/conf_firewalld
+# handlers file for roles/conf_firewall
 
 - name: Recargar firewalld
   ansible.builtin.service:

@@ -1,6 +1,7 @@
 ---
-# tasks file for roles/conf_firewalld
+# tasks file for roles/conf_firewall
 
+# 4. Configuración de Firewall
 - name: Configurar firewall según el sistema operativo
   block:
     # Firewalld para RHEL/CentOS

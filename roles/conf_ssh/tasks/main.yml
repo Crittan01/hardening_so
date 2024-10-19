@@ -1,25 +1,26 @@
 ---
 # tasks file for roles/conf_ssh
+
+# 3. Configuración de SSH (Cambiar puerto, deshabilitar root login)
 - name: Configuracion SSH
   notify:
     - Reiniciar SSH
   block:
-    # 3. Configuración de SSH (Cambiar puerto, deshabilitar root login)
-    - name: Configurar SSH para mayor seguridad
+    - name: Configurar SSH para mayor seguridad (Default PermitRootLogin = no)
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         state: present
         regexp: "^#?PermitRootLogin"
         line: "PermitRootLogin {{ root_login | default('no') }}"
 
-    - name: Configurar autenticación por clave en SSH (Deshabilitar contraseña)
+    - name: Configurar autenticación SSH (Deshabilitar contraseña) (Default PasswordAuthentication = no)
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         state: present
         regexp: "^#?PasswordAuthentication"
         line: "PasswordAuthentication {{ passwd_auth | default('no') }}"
 
-    - name: Configurar puerto de SSH
+    - name: Configurar puerto de SSH (Default Port = 22)
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: "^#?Port"
@@ -28,7 +29,7 @@
 
     - name: Configurar SSH para permitir solo ciertos usuarios si se especifican
       block:
-        - name: Agregar directiva AllowUsers si hay usuarios
+        - name: Agregar directiva AllowUsers si hay usuarios (Default AllowUsers = root ansible)
           ansible.builtin.lineinfile:
             path: /etc/ssh/sshd_config
             regexp: "^#?AllowUsers"
@@ -43,21 +44,21 @@
             state: absent
           when: allowed_ssh_users is not defined or allowed_ssh_users | length == 0
 
-    - name: Deshabilitar Autenticacion con contraseñas Vacias
+    - name: Deshabilitar Autenticacion con contraseñas Vacias (Default PermitEmptyPasswords = no)
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: "^#?PermitEmptyPasswords"
         line: "PermitEmptyPasswords {{ pwd_empty | default('no') }}"
         state: present
 
-    - name: Limitar las sesiones abiertas simultáneas de SSH
+    - name: Limitar las sesiones abiertas simultáneas de SSH (Default MaxSessions = 10)
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: "^#?MaxSessions"
         line: "MaxSessions {{ max_session | default('10') }}"
         state: present
 
-    - name: Establecer tiempo de inactividad máximo antes de desconectar sesión SSH
+    - name: Establecer tiempo de inactividad máximo antes de desconectar sesión SSH (Default ClientAliveInterval = 300)
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: "^#?ClientAliveInterval"

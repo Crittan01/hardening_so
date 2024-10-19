@@ -1,14 +1,14 @@
 ---
 # tasks file for roles/conf_services
 
-# 2. Deshabilitar servicios innecesarios
+# 1. Deshabilitar servicios innecesarios
 - name: Deshabilitar y detener servicios innecesarios (postfix)
   ansible.builtin.systemd:
     name: postfix
     enabled: false
     state: stopped
 
-# 4. Configuración de Firewall
+# 2. Configuración de Firewall
 - name: Configuracion de Firewall
   block:
     # Firewalld para RHEL/CentOS

@@ -7,6 +7,6 @@
     - install_pkgs
     - conf_services
     - conf_ssh
-    - conf_firewalld
+    - conf_firewall
     - conf_param_kernel
     - conf_parametros
