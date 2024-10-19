@@ -4,6 +4,9 @@ centos7
 [ubuntu_servers]
 ubuntu24
 
+[local_server]
+rhel8awx
+
 # Todos los servidores
 [all:vars]
 ansible_connection=ssh

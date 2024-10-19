@@ -1,0 +1,17 @@
+---
+# tasks file for roles/summary_report
+- name: Generar informe final del hardening en servidor remoto
+  ansible.builtin.template:
+    src: report_template.j2
+    dest: /tmp/hardening_report_{{ inventory_hostname }}.log
+    mode: "0755"
+
+- name: Traer el informe al controlador (AWX)
+  ansible.builtin.fetch:
+    src: /tmp/hardening_report_{{ inventory_hostname }}.log
+    dest: /tmp/hardening_reports/
+    flat: true
+
+- name: Mostrar resumen del hardening aplicado
+  ansible.builtin.debug:
+    msg: "{{ lookup('file', '/tmp/hardening_reports/hardening_report_' + inventory_hostname + '.log').splitlines() }}"

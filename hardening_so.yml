@@ -1,6 +1,6 @@
 ---
 - name: Hardening de Servidores
-  hosts: all
+  hosts: centos_servers, ubuntu_servers
   become: true
 
   roles:
@@ -10,3 +10,4 @@
     - conf_firewall
     - conf_param_kernel
     - conf_parametros
+    - summary_report

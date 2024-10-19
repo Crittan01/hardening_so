@@ -36,3 +36,12 @@
         cmd: "ufw --force enable"
       when: ansible_facts['os_family'] == 'Debian'
       changed_when: false
+
+- name: Capturar estado de instalación del firewall
+  ansible.builtin.set_fact:
+    firewall_installed: |
+      {% if ansible_facts['os_family'] == 'RedHat' %}
+      Firewalld instalado
+      {% elif ansible_facts['os_family'] == 'Debian' %}
+      UFW instalado
+      {% endif %}

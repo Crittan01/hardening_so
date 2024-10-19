@@ -55,3 +55,7 @@
     path: /etc/logrotate.conf
     regexp: "^#?rotate"
     line: "rotate {{ prm_rotate | default('7') }}" # Mantener logs durante 7 días
+
+- name: Capturar estado de la configuración de rotación de logs
+  ansible.builtin.set_fact:
+    log_rotation_days: "{{ prm_rotate | default('7') }}"

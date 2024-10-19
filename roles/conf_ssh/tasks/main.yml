@@ -64,3 +64,11 @@
         regexp: "^#?ClientAliveInterval"
         line: "ClientAliveInterval {{ client_alive | default('300') }}" # 300 segundos (5 minutos)
         state: present
+
+- name: Capturar estado de SSH
+  ansible.builtin.set_fact:
+    ssh_config_status: |
+      - PermitRootLogin: {{ root_login | default('no') }}
+      - PasswordAuthentication: {{ passwd_auth | default('no') }}
+      - SSH Port: {{ ssh_port | default(22) }}
+      - AllowUsers: {{ allowed_ssh_users | default('root ansible') }}

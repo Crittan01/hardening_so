@@ -1,0 +1,56 @@
+### Informe de Hardening - Servidor {{ inventory_hostname }} ###
+
+Fecha: {{ ansible_date_time.date }}
+
+1. Configuración de SSH:
+  - PermitRootLogin: {{ root_login | default('no') }}
+  - PasswordAuthentication: {{ passwd_auth | default('no') }}
+  - SSH Port: {{ ssh_port | default(22) }}
+  - AllowUsers: {{ allowed_ssh_users | default('root ansible') }}
+
+2. Servicios Detenidos:
+  {% if postfix_stopped is defined %}
+  - Postfix detenido: {{ postfix_stopped }}
+  {% else %}
+  - Postfix: No se aplicaron cambios
+  {% endif %}
+
+3. Configuración de Firewall:
+  {% if firewall_installed is defined %}
+  - Estado del firewall: {{ firewall_installed }}
+  {% endif %}
+  {% if firewall_status is defined %}
+  - Estado del firewall: {{ firewall_status }}
+  {% else %}
+  - No se configuró ningún firewall.
+  {% endif %}
+
+4. Parámetros del Kernel:
+  {% if kernel_security_config is defined %}
+  {{ kernel_security_config }}
+  {% else %}
+  - No se configuraron parámetros del kernel.
+  {% endif %}
+
+5. Auditoría y Seguridad:
+  {% if audit_rules_configured is defined %}
+  - Reglas de auditoría aplicadas: {{ audit_rules_configured }}
+  {% else %}
+  - Reglas de auditoría: No se aplicaron
+  {% endif %}
+  
+6. Políticas de Contraseñas:
+  {% if password_policy_minlen is defined %}
+  - Longitud mínima de contraseña: {{ password_policy_minlen }}
+  {% else %}
+  - No se configuró política de contraseñas.
+  {% endif %}
+
+7. Rotación de Logs:
+  {% if log_rotation_days is defined %}
+  - Días de retención de logs: {{ log_rotation_days }}
+  {% else %}
+  - No se configuró rotación de logs.
+  {% endif %}
+
+### Fin del Informe ###

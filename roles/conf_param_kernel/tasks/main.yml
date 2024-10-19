@@ -1,15 +1,7 @@
 ---
 # tasks file for roles/conf_param_kernel
 
-# 5. Deshabilitar ICMP ping responses (prevención de descubrimiento de red)
-- name: Deshabilitar respuesta a ping
-  ansible.posix.sysctl:
-    name: net.ipv4.icmp_echo_ignore_all
-    value: 1 # deshabilita la respuesta a las solicitudes de ping
-    state: present
-    reload: true
-
-# 6. Seguridad del Kernel
+# 5. Seguridad del Kernel: Configurar parámetros del kernel
 - name: Configurar parámetros de seguridad del kernel
   ansible.posix.sysctl:
     name: "{{ item.name }}"
@@ -18,14 +10,33 @@
     reload: true
     sysctl_set: true
   loop:
+    - { name: "net.ipv4.icmp_echo_ignore_all", value: 1 } # Deshabilitar respuesta a ping
     - { name: "net.ipv4.conf.all.accept_redirects", value: 0 } # Deshabilita la aceptación de redirecciones ICMP en el sistema
     - { name: "net.ipv4.conf.all.send_redirects", value: 0 } # Deshabilita el envío de redirecciones ICMP
     - { name: "net.ipv4.conf.all.rp_filter", value: 1 } # Habilita el filtro de suplantación de IP (Reverse Path Filtering) - spoofing
     - { name: "net.ipv4.tcp_syncookies", value: 1 } # Habilita las SYN cookies, medida de protección contra ataques SYN flood.
+    - { name: "fs.suid_dumpable", value: 0 } # Deshabilitar core dumps
 
-- name: Deshabilitar core dumps
-  ansible.posix.sysctl:
-    name: fs.suid_dumpable # asegurar la memoria de páginas de kernel
-    value: 0
-    state: present
-    reload: true
+# 2. Capturar el estado de los parámetros de seguridad del kernel
+- name: Consultar parámetros de kernel aplicados
+  ansible.builtin.command:
+    cmd: sysctl -n {{ item }}
+  register: sysctl_result
+  loop:
+    - net.ipv4.icmp_echo_ignore_all
+    - net.ipv4.conf.all.accept_redirects
+    - net.ipv4.conf.all.send_redirects
+    - net.ipv4.conf.all.rp_filter
+    - net.ipv4.tcp_syncookies
+    - fs.suid_dumpable
+  changed_when: false
+
+- name: Capturar estado de configuración de parámetros del kernel
+  ansible.builtin.set_fact:
+    kernel_security_config: |
+      - ICMP echo ignore: {{ sysctl_result.results[0].stdout }}
+      - Accept Redirects: {{ sysctl_result.results[1].stdout }}
+      - Send Redirects: {{ sysctl_result.results[2].stdout }}
+      - RP Filter: {{ sysctl_result.results[3].stdout }}
+      - SYN Cookies: {{ sysctl_result.results[4].stdout }}
+      - Core dumps: {{ sysctl_result.results[5].stdout }}

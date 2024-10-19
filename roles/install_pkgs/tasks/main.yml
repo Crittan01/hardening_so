@@ -15,3 +15,7 @@
         name: auditd
         state: present
       when: ansible_facts['os_family'] == 'Debian'
+
+- name: Capturar información de la instalación de auditd
+  ansible.builtin.set_fact:
+    auditd_installed: true
