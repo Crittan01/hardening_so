@@ -1,6 +1,6 @@
 ---
 - name: Hardening de Servidores
-  hosts: servers
+  hosts: all
   become: true
 
   roles:
