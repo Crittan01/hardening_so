@@ -1,7 +1,0 @@
----
-# handlers file for roles/conf_firewalld
-
-- name: Recargar firewalld
-  ansible.builtin.service:
-    name: firewalld
-    state: reloaded
