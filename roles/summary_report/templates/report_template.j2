@@ -7,15 +7,11 @@ Fecha: {{ ansible_date_time.date }}
   - PasswordAuthentication: {{ passwd_auth | default('no') }}
   - SSH Port: {{ ssh_port | default(22) }}
   - AllowUsers: {{ allowed_ssh_users | default('root ansible') }}
+  - PermitEmptyPasswords: {{ pwd_empty | default('no') }}
+  - MaxSessions: {{ max_session | default('10') }}
+  - ClientAliveInterval: {{ client_alive | default('300') }}
 
-2. Servicios Detenidos:
-  {% if postfix_stopped is defined %}
-  - Postfix detenido: {{ postfix_stopped }}
-  {% else %}
-  - Postfix: No se aplicaron cambios
-  {% endif %}
-
-3. Configuración de Firewall:
+2. Configuración de Firewall:
   {% if firewall_installed is defined %}
   - Estado del firewall: {{ firewall_installed }}
   {% endif %}
@@ -23,6 +19,13 @@ Fecha: {{ ansible_date_time.date }}
   - Estado del firewall: {{ firewall_status }}
   {% else %}
   - No se configuró ningún firewall.
+  {% endif %}
+
+3. Servicios Detenidos:
+  {% if postfix_stopped is defined %}
+  - Postfix detenido: {{ postfix_stopped }}
+  {% else %}
+  - Postfix: No se aplicaron cambios
   {% endif %}
 
 4. Parámetros del Kernel:

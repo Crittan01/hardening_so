@@ -72,3 +72,6 @@
       - PasswordAuthentication: {{ passwd_auth | default('no') }}
       - SSH Port: {{ ssh_port | default(22) }}
       - AllowUsers: {{ allowed_ssh_users | default('root ansible') }}
+      - PermitEmptyPasswords: {{ pwd_empty | default('no') }}
+      - MaxSessions: {{ max_session | default('10') }}
+      - ClientAliveInterval: {{ client_alive | default('300') }}

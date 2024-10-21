@@ -27,11 +27,11 @@
     mode: "0400"
 
 # 8. Políticas de Contraseñas
-- name: Configurar políticas de contraseñas (Default minlen = 12)
+- name: Configurar políticas de contraseñas (Default minlen = 9)
   ansible.builtin.lineinfile:
     path: /etc/security/pwquality.conf
     regexp: "^#?minlen"
-    line: "minlen = {{ prm_rotate | default('12') }}"
+    line: "minlen = {{ pwquality | default('9') }}"
     state: present
 
 # 9. Establecer límites de recursos para usuarios
@@ -49,7 +49,7 @@
     line: "auth required pam_tally2.so deny={{ failed_login_attempts | default(5) }} unlock_time=900"
     state: present
 
-# 11. Bloqueo de cuentas tras intentos fallidos
+# 11. Log rotacion
 - name: Configurar rotación de logs (Default rotate = 7)
   ansible.builtin.lineinfile:
     path: /etc/logrotate.conf
