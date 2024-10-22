@@ -1,6 +1,6 @@
 ---
 - name: Hardening de Servidores.
-  hosts: centos_servers, ubuntu_servers
+  hosts: ubuntu_servers
   become: true
 
   roles:
