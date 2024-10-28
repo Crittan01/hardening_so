@@ -26,13 +26,13 @@
       -a always,exit -F arch=b64 -S adjtimex -S settimeofday -S clock_settime -k time_changes
     mode: "0400"
 
-# 8. Políticas de Contraseñas
-- name: Configurar políticas de contraseñas (Default minlen = 9)
-  ansible.builtin.lineinfile:
-    path: /etc/security/pwquality.conf
-    regexp: "^#?minlen"
-    line: "minlen = {{ pwquality | default('9') }}"
-    state: present
+# # 8. Políticas de Contraseñas
+# - name: Configurar políticas de contraseñas (Default minlen = 9)
+#   ansible.builtin.lineinfile:
+#     path: /etc/security/pwquality.conf
+#     regexp: "^#?minlen"
+#     line: "minlen = {{ pwquality | default('9') }}"
+#     state: present
 
 # 9. Establecer límites de recursos para usuarios
 - name: Establecer límites de recursos para usuarios
