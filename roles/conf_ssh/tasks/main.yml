@@ -13,12 +13,12 @@
         regexp: "^#?PermitRootLogin"
         line: "PermitRootLogin {{ root_login | default('no') }}"
 
-    - name: Configurar autenticación SSH (Deshabilitar contraseña) (Default PasswordAuthentication = no)
+    - name: Configurar autenticación SSH (Deshabilitar contraseña) (Default PasswordAuthentication = yes)
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         state: present
         regexp: "^#?PasswordAuthentication"
-        line: "PasswordAuthentication {{ passwd_auth | default('no') }}"
+        line: "PasswordAuthentication {{ passwd_auth | default('yes') }}"
 
     - name: Configurar puerto de SSH (Default Port = 22)
       ansible.builtin.lineinfile:
