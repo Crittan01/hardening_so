@@ -6,7 +6,7 @@
   notify:
     - Reiniciar SSH
   block:
-    - name: Configurar SSH para mayor seguridad (Default PermitRootLogin = no)
+    - name: Configurar SSH para mayor seguridad. (Default PermitRootLogin = no)
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         state: present
